@@ -3,16 +3,15 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 )
 
 func main() {
-	branches, err := exec.Command("git", "branch", "-rv").Output()
+	branches, err := execGitBranch()
 
 	if err != nil {
-		fmt.Println("%v", err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	fmt.Println(string(branches))
+	fmt.Println(branches)
 }
