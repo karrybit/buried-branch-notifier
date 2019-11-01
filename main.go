@@ -1,7 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"os/exec"
+)
 
 func main() {
-    fmt.Println("hello")
+	branches, err := exec.Command("git", "branch", "-rv").Output()
+
+	if err != nil {
+		fmt.Println("%v", err)
+		os.Exit(1)
+	}
+
+	fmt.Println(string(branches))
 }
