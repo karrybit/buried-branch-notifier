@@ -2,10 +2,9 @@ package main
 
 import (
 	"branch-purge-list-creator/command"
-	"branch-purge-list-creator/model"
+	"branch-purge-list-creator/model/git"
 	"fmt"
 	"os"
-	"time"
 )
 
 func main() {
@@ -16,41 +15,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	for _, branch := range branches {
-		fmt.Println(branch)
-	}
-
-	logs, err := command.ExecGitLog(branches)
+	gitLogs, err := command.ExecGitLog(branches)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	for _, log := range logs {
-		fmt.Println(log)
-	}
-
-	var branchInfos []model.BranchInfo
-	for _, log := range logs {
-		branchInfos = append(branchInfos, model.New(log))
-	}
-
-	for _, branchInfo := range branchInfos {
-		fmt.Printf("%+v\n", branchInfo)
-	}
-
-	filteredBranchInfo := filterBranchInfo(branchInfos)
-	_ = filteredBranchInfo
-}
-
-func filterBranchInfo(branchInfos []model.BranchInfo) []model.BranchInfo {
-	now := time.Now()
-	var filteredBranchInfos []model.BranchInfo
-	for _, branchInfo := range branchInfos {
-		days := int(now.Sub(branchInfo.LastCommitDate.Time).Hours()) / 24
-		if days >= 14 {
-			filteredBranchInfos = append(filteredBranchInfos, branchInfo)
+	branchOwnerMap := git.NewBranchInformations(gitLogs)
+	for key, element := range branchOwnerMap {
+		for _, branchInformation := range element {
+			fmt.Printf("%s: %+v\n", key, branchInformation)
 		}
 	}
-	return filteredBranchInfos
 }
