@@ -3,13 +3,13 @@ package main
 import (
 	"branch-purge-list-creator/command"
 	"branch-purge-list-creator/model/git"
+	"branch-purge-list-creator/request"
 	"fmt"
 	"os"
 )
 
 func main() {
 	branches, err := command.ExecGitBranch()
-
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -22,9 +22,12 @@ func main() {
 	}
 
 	branchOwnerMap := git.NewBranchInformations(gitLogs)
-	for key, element := range branchOwnerMap {
-		for _, branchInformation := range element {
-			fmt.Printf("%s: %+v\n", key, branchInformation)
-		}
+
+	requester, err := request.NewRequester(branchOwnerMap)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
+
+	requester.Notify()
 }
