@@ -44,16 +44,10 @@ func main() {
 }
 
 func filterBranchInfo(branchInfos []model.BranchInfo) []model.BranchInfo {
-	now := time.Now().UTC()
+	now := time.Now()
 	var filteredBranchInfos []model.BranchInfo
 	for _, branchInfo := range branchInfos {
-		lastCommitDate, err := time.Parse(branchInfo.LastCommitDateString, "2006-01-02")
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		days := int(now.Sub(lastCommitDate).Hours())
+		days := int(now.Sub(branchInfo.LastCommitDate.Time).Hours()) / 24
 		if days >= 14 {
 			filteredBranchInfos = append(filteredBranchInfos, branchInfo)
 		}
