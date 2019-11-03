@@ -54,6 +54,6 @@ func (r *Requester) Notify() error {
 		return err
 	}
 
-	defer response.Body.Close()
+	response.Body.Close()
 	return nil
 }
