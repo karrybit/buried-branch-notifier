@@ -12,7 +12,7 @@ func ExecGitBranch() ([]string, error) {
 	}
 
 	branches := splitBranches(strings.TrimSpace(string(branchesString)))
-	return removeHeadBranchIndex(branches), nil
+	return removeHeadBranch(branches), nil
 }
 
 func splitBranches(branchesString string) []string {
@@ -24,7 +24,7 @@ func splitBranches(branchesString string) []string {
 	return trimedBranches
 }
 
-func removeHeadBranchIndex(branches []string) []string {
+func removeHeadBranch(branches []string) []string {
 	for i, branch := range branches {
 		if strings.Contains(branch, "origin/HEAD") {
 			return append(branches[:i], branches[i+1:]...)
