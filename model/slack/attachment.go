@@ -17,18 +17,28 @@ type Field struct {
 	Short bool   `json:"short"`
 }
 
-func NewAttachments(branchOwnerMap map[string][]git.BranchInformation) []Attachment {
+func NewAttachments(branchCommiterMap map[string][]*git.BranchInformation) []Attachment {
 	var attachments []Attachment
 	now := time.Now()
-	for key, branchInformations := range branchOwnerMap {
-		attachment := Attachment{Color: "danger"}
-		var buffer []byte
-		for _, branchInformation := range branchInformations {
-			message := fmt.Sprintf("  %s has stopped from %s (%vdays ago)\n", branchInformation.BranchName, branchInformation.LastCommitDate.Format("2006-01-02"), int(now.Sub(branchInformation.LastCommitDate.Time).Hours())/24)
-			buffer = append(buffer, message...)
-		}
-		attachment.Fields = append(attachment.Fields, Field{Title: key, Value: string(buffer), Short: false})
-		attachments = append(attachments, attachment)
+	for commiter, branchInformations := range branchCommiterMap {
+		attachment := newAttachment(commiter, branchInformations, now)
+		attachments = append(attachments, *attachment)
 	}
 	return attachments
+}
+
+func newAttachment(author string, branchInformations []*git.BranchInformation, now time.Time) *Attachment {
+	attachment := Attachment{Color: "danger"}
+	message := buildMessage(branchInformations, now)
+	attachment.Fields = append(attachment.Fields, Field{Title: author, Value: message, Short: false})
+	return &attachment
+}
+
+func buildMessage(branchInformations []*git.BranchInformation, now time.Time) string {
+	var buffer []byte
+	for _, branchInformation := range branchInformations {
+		message := fmt.Sprintf("%s has stopped from %s (%vdays ago)\n", branchInformation.BranchName, branchInformation.LastCommitDate.Format("2006-01-02"), int(now.Sub(branchInformation.LastCommitDate.Time).Hours())/24)
+		buffer = append(buffer, message...)
+	}
+	return string(buffer)
 }

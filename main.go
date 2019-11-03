@@ -21,9 +21,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	branchOwnerMap := git.NewBranchOwnerMap(gitLogs)
+	branchCommiterMap := git.NewBranchCommiterMap(gitLogs)
 
-	requester, err := request.NewRequester(branchOwnerMap)
+	requester, err := request.NewRequester(branchCommiterMap)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

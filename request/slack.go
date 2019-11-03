@@ -11,20 +11,20 @@ import (
 )
 
 type Requester struct {
-	url            *url.URL
-	httpClient     *http.Client
-	branchOwnerMap map[string][]git.BranchInformation
+	url               *url.URL
+	httpClient        *http.Client
+	branchCommiterMap map[string][]*git.BranchInformation
 }
 
 const urlString = ""
 
 // New is function to initialize Client
-func NewRequester(branchOwnerMap map[string][]git.BranchInformation) (*Requester, error) {
+func NewRequester(branchCommiterMap map[string][]*git.BranchInformation) (*Requester, error) {
 	url, err := url.Parse(urlString)
 	if err != nil {
 		return nil, err
 	}
-	requester := Requester{httpClient: &http.Client{Timeout: time.Duration(10) * time.Second}, branchOwnerMap: branchOwnerMap}
+	requester := Requester{httpClient: &http.Client{Timeout: time.Duration(10) * time.Second}, branchCommiterMap: branchCommiterMap}
 	requester.url = url
 	return &requester, nil
 }
@@ -38,8 +38,8 @@ func (r *Requester) Notify() error {
 	}{
 		"Stalin",
 		":zawazawa:",
-		"The following branches have not moved for more than 2 weeks.*Let's purge!!*",
-		slack.NewAttachments(r.branchOwnerMap),
+		"*The following branches have not moved for more than 2 weeks. Let's purge!!*",
+		slack.NewAttachments(r.branchCommiterMap),
 	})
 	bodyReader := bytes.NewReader(bodyByte)
 

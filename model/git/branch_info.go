@@ -29,37 +29,37 @@ type BranchInformation struct {
 	LastCommitDate CustomDateTime `json:"last_commit_date"`
 }
 
-func NewBranchOwnerMap(gitLogs []string) map[string][]BranchInformation {
+func NewBranchCommiterMap(gitLogs []string) map[string][]*BranchInformation {
 	branchInformations := unmarshalLogs(gitLogs)
-	branchOwnerMap := tieOldBranchToAuthor(branchInformations)
-	sortBranchesByDate(&branchOwnerMap)
-	return branchOwnerMap
+	branchCommiterMap := tieOldBranchToAuthor(branchInformations)
+	sortBranchesByDate(branchCommiterMap)
+	return branchCommiterMap
 }
 
-func unmarshalLogs(gitLogs []string) []BranchInformation {
-	var branchInformations []BranchInformation
+func unmarshalLogs(gitLogs []string) []*BranchInformation {
+	var branchInformations []*BranchInformation
 	for _, gitLog := range gitLogs {
 		branchInformation := BranchInformation{}
 		json.Unmarshal([]byte(gitLog), &branchInformation)
-		branchInformations = append(branchInformations, branchInformation)
+		branchInformations = append(branchInformations, &branchInformation)
 	}
 	return branchInformations
 }
 
-func tieOldBranchToAuthor(branchInformations []BranchInformation) map[string][]BranchInformation {
+func tieOldBranchToAuthor(branchInformations []*BranchInformation) map[string][]*BranchInformation {
 	now := time.Now()
-	branchOwnerMap := make(map[string][]BranchInformation)
+	branchCommiterMap := make(map[string][]*BranchInformation)
 	for _, branchInformation := range branchInformations {
 		days := int(now.Sub(branchInformation.LastCommitDate.Time).Hours()) / 24
 		if days >= 14 {
-			branchOwnerMap[branchInformation.CommiterName] = append(branchOwnerMap[branchInformation.CommiterName], branchInformation)
+			branchCommiterMap[branchInformation.CommiterName] = append(branchCommiterMap[branchInformation.CommiterName], branchInformation)
 		}
 	}
-	return branchOwnerMap
+	return branchCommiterMap
 }
 
-func sortBranchesByDate(branchOwnerMap *map[string][]BranchInformation) {
-	for _, branchInformations := range *branchOwnerMap {
+func sortBranchesByDate(branchOwnerMap map[string][]*BranchInformation) {
+	for _, branchInformations := range branchOwnerMap {
 		sort.SliceStable(branchInformations, func(i, j int) bool {
 			return branchInformations[i].LastCommitDate.Before(branchInformations[j].LastCommitDate.Time)
 		})
