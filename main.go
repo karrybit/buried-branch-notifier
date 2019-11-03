@@ -10,24 +10,23 @@ import (
 
 func main() {
 	branches, err := command.ExecGitBranch()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	exitIfError(err)
 
 	gitLogs, err := command.ExecGitLog(branches)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	exitIfError(err)
 
 	branchCommiterMap := git.NewBranchCommiterMap(gitLogs)
 
 	requester, err := request.NewRequester(branchCommiterMap)
+	exitIfError(err)
+
+	err = requester.Notify()
+	exitIfError(err)
+}
+
+func exitIfError(err error) {
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
-	requester.Notify()
 }
