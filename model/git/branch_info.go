@@ -29,15 +29,10 @@ type BranchInformation struct {
 	LastCommitDate CustomDateTime `json:"last_commit_date"`
 }
 
-func NewBranchInformations(gitLogs []string) map[string][]BranchInformation {
-	var branchInformations []BranchInformation
-	for _, gitLog := range gitLogs {
-		branchInformation := BranchInformation{}
-		json.Unmarshal([]byte(gitLog), &branchInformation)
-		branchInformations = append(branchInformations, branchInformation)
-	}
+func NewBranchOwnerMap(gitLogs []string) map[string][]BranchInformation {
+	branchInformations := unmarshalLogs(gitLogs)
 
-	branchOwnerMap := reduceRecentlyBranch(branchInformations)
+	branchOwnerMap := tieOldBranchToAuthor(branchInformations)
 	for _, branchInformations := range branchOwnerMap {
 		sort.SliceStable(branchInformations, func(i, j int) bool {
 			return branchInformations[i].LastCommitDate.Before(branchInformations[j].LastCommitDate.Time)
@@ -47,7 +42,17 @@ func NewBranchInformations(gitLogs []string) map[string][]BranchInformation {
 	return branchOwnerMap
 }
 
-func reduceRecentlyBranch(branchInformations []BranchInformation) map[string][]BranchInformation {
+func unmarshalLogs(gitLogs []string) []BranchInformation {
+	var branchInformations []BranchInformation
+	for _, gitLog := range gitLogs {
+		branchInformation := BranchInformation{}
+		json.Unmarshal([]byte(gitLog), &branchInformation)
+		branchInformations = append(branchInformations, branchInformation)
+	}
+	return branchInformations
+}
+
+func tieOldBranchToAuthor(branchInformations []BranchInformation) map[string][]BranchInformation {
 	now := time.Now()
 	branchOwnerMap := make(map[string][]BranchInformation)
 	for _, branchInformation := range branchInformations {

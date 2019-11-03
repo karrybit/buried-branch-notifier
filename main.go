@@ -21,7 +21,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	branchOwnerMap := git.NewBranchInformations(gitLogs)
+	branchOwnerMap := git.NewBranchOwnerMap(gitLogs)
 
 	requester, err := request.NewRequester(branchOwnerMap)
 	if err != nil {
