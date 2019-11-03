@@ -6,12 +6,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
-	"net/url"
 	"time"
 )
 
 type Requester struct {
-	url               *url.URL
 	httpClient        *http.Client
 	branchCommiterMap map[string][]*git.BranchInformation
 }
@@ -20,12 +18,7 @@ const urlString = ""
 
 // New is function to initialize Client
 func NewRequester(branchCommiterMap map[string][]*git.BranchInformation) (*Requester, error) {
-	url, err := url.Parse(urlString)
-	if err != nil {
-		return nil, err
-	}
 	requester := Requester{httpClient: &http.Client{Timeout: time.Duration(10) * time.Second}, branchCommiterMap: branchCommiterMap}
-	requester.url = url
 	return &requester, nil
 }
 
@@ -43,7 +36,7 @@ func (r *Requester) Notify() error {
 	})
 	bodyReader := bytes.NewReader(bodyByte)
 
-	request, err := http.NewRequest(http.MethodPost, r.url.String(), bodyReader)
+	request, err := http.NewRequest(http.MethodPost, urlString, bodyReader)
 	if err != nil {
 		return err
 	}
