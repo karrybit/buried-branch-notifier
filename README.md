@@ -1,6 +1,7 @@
 # buried-branch-notifier
 
-[![Actions Status](https://github.com/makanai5610/buried-branch-notifier/workflows/Main/badge.svg)](https://github.com/makanai5610/buried-branch-notifier/actions)
+[![Actions Status](https://github.com/makanai5610/buried-branch-notifier/workflows/Build/badge.svg)](https://github.com/makanai5610/buried-branch-notifier/actions)
+[![Actions Status](https://github.com/makanai5610/buried-branch-notifier/workflows/Test/badge.svg)](https://github.com/makanai5610/buried-branch-notifier/actions)
 [![](https://tokei.rs/b1/github/makanai5610/buried-branch-notifier?category=files)](https://github.com/makanai5610/buried-branch-notifier)
 [![](https://tokei.rs/b1/github/makanai5610/buried-branch-notifier?category=lines)](https://github.com/makanai5610/buried-branch-notifier)
 
