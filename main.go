@@ -1,9 +1,9 @@
 package main
 
 import (
-	"branch-purge-list-creator/command"
-	"branch-purge-list-creator/model/git"
-	"branch-purge-list-creator/request"
+	"buried-branch-notifyer/command"
+	"buried-branch-notifyer/model/git"
+	"buried-branch-notifyer/request"
 	"fmt"
 	"os"
 )

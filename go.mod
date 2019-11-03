@@ -1,3 +1,3 @@
-module branch-purge-list-creator
+module buried-branch-notifyer
 
 go 1.13

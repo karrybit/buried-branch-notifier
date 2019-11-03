@@ -1,8 +1,8 @@
 package request
 
 import (
-	"branch-purge-list-creator/model/git"
-	"branch-purge-list-creator/model/slack"
+	"buried-branch-notifyer/model/git"
+	"buried-branch-notifyer/model/slack"
 	"bytes"
 	"encoding/json"
 	"net/http"
