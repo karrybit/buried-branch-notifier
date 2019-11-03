@@ -31,8 +31,10 @@ type BranchInformation struct {
 
 func NewBranchCommiterMap(gitLogs []string) map[string][]*BranchInformation {
 	branchInformations := unmarshalLogs(gitLogs)
+	sort.SliceStable(branchInformations, func(i, j int) bool {
+		return branchInformations[i].LastCommitDate.Before(branchInformations[j].LastCommitDate.Time)
+	})
 	branchCommiterMap := tieOldBranchToAuthor(branchInformations)
-	sortBranchesByDate(branchCommiterMap)
 	return branchCommiterMap
 }
 
@@ -56,12 +58,4 @@ func tieOldBranchToAuthor(branchInformations []*BranchInformation) map[string][]
 		}
 	}
 	return branchCommiterMap
-}
-
-func sortBranchesByDate(branchOwnerMap map[string][]*BranchInformation) {
-	for _, branchInformations := range branchOwnerMap {
-		sort.SliceStable(branchInformations, func(i, j int) bool {
-			return branchInformations[i].LastCommitDate.Before(branchInformations[j].LastCommitDate.Time)
-		})
-	}
 }
