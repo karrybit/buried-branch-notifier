@@ -1,8 +1,8 @@
 package request
 
 import (
-	"buried-branch-notifyer/model/git"
-	"buried-branch-notifyer/model/slack"
+	"buried-branch-notifier/model/git"
+	"buried-branch-notifier/model/slack"
 	"bytes"
 	"encoding/json"
 	"net/http"

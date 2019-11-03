@@ -1,9 +1,9 @@
 package main
 
 import (
-	"buried-branch-notifyer/command"
-	"buried-branch-notifyer/model/git"
-	"buried-branch-notifyer/request"
+	"buried-branch-notifier/command"
+	"buried-branch-notifier/model/git"
+	"buried-branch-notifier/request"
 	"fmt"
 	"os"
 )

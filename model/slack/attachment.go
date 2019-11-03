@@ -1,7 +1,7 @@
 package slack
 
 import (
-	"buried-branch-notifyer/model/git"
+	"buried-branch-notifier/model/git"
 	"fmt"
 	"time"
 )
