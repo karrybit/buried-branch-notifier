@@ -38,7 +38,7 @@ func (r *Requester) Notify() error {
 	}{
 		"Stalin",
 		":zawazawa:",
-		"*The following branches have not moved for more than 2 weeks. Let's purge!!*",
+		"*The following branches have not developed for more than 2 weeks. Let's purge!!*",
 		slack.NewAttachments(r.branchCommiterMap),
 	})
 	bodyReader := bytes.NewReader(bodyByte)

@@ -1,6 +1,7 @@
 package command
 
 import (
+	"fmt"
 	"os/exec"
 )
 
@@ -8,7 +9,7 @@ func ExecGitLog(branches []string) ([]string, error) {
 	var branchLogs []string
 	dateFormat := "--date=iso-strict"
 	for _, branch := range branches {
-		logFormat := "--pretty=format:{%n  \"branch_name\": \"" + branch + "\",%n  \"commiter_name\": \"%aN\",%n  \"last_commit_date\": \"%ad\"%n}"
+		logFormat := fmt.Sprintf(`--pretty=format:{"branch_name":"%s","commiter_name":"%s","last_commit_date":"%s"}`, branch, "%aN", "%ad")
 		branchLog, err := exec.Command("git", "log", "-n", "1", branch, logFormat, dateFormat).Output()
 		if err != nil {
 			return []string{}, err
