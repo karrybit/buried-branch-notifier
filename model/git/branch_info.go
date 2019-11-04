@@ -2,7 +2,6 @@ package git
 
 import (
 	"encoding/json"
-	"sort"
 	"strings"
 	"time"
 )
@@ -29,13 +28,8 @@ type BranchInformation struct {
 	LastCommitDate CustomDateTime `json:"last_commit_date"`
 }
 
-func NewBranchCommiterMap(gitLogs []string) map[string][]*BranchInformation {
-	branchInformations := unmarshalLogs(gitLogs)
-	sort.SliceStable(branchInformations, func(i, j int) bool {
-		return branchInformations[i].LastCommitDate.Before(branchInformations[j].LastCommitDate.Time)
-	})
-	branchCommiterMap := tieOldBranchToAuthor(branchInformations)
-	return branchCommiterMap
+func NewBranchInformations(gitLogs []string) []*BranchInformation {
+	return unmarshalLogs(gitLogs)
 }
 
 func unmarshalLogs(gitLogs []string) []*BranchInformation {
@@ -46,16 +40,4 @@ func unmarshalLogs(gitLogs []string) []*BranchInformation {
 		branchInformations = append(branchInformations, &branchInformation)
 	}
 	return branchInformations
-}
-
-func tieOldBranchToAuthor(branchInformations []*BranchInformation) map[string][]*BranchInformation {
-	now := time.Now()
-	branchCommiterMap := make(map[string][]*BranchInformation)
-	for _, branchInformation := range branchInformations {
-		days := int(now.Sub(branchInformation.LastCommitDate.Time).Hours()) / 24
-		if days >= 14 {
-			branchCommiterMap[branchInformation.CommiterName] = append(branchCommiterMap[branchInformation.CommiterName], branchInformation)
-		}
-	}
-	return branchCommiterMap
 }

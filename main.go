@@ -4,6 +4,7 @@ import (
 	"buried-branch-notifier/command"
 	"buried-branch-notifier/model/git"
 	"buried-branch-notifier/request"
+	"buried-branch-notifier/usecase"
 	"fmt"
 	"os"
 )
@@ -15,9 +16,12 @@ func main() {
 	gitLogs, err := command.ExecGitLog(branches)
 	exitIfError(err)
 
-	branchCommiterMap := git.NewBranchCommiterMap(gitLogs)
+	branchInformations := git.NewBranchInformations(gitLogs)
 
-	requester, err := request.NewRequester(branchCommiterMap)
+	usecase.SortByLastCommitDate(branchInformations)
+	branchCommiterMap := usecase.TieOldBranchToAuthor(branchInformations)
+
+	requester, err := request.NewRequester(branchCommiterMap, len(branchInformations))
 	exitIfError(err)
 
 	err = requester.Notify()

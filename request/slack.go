@@ -5,6 +5,7 @@ import (
 	"buried-branch-notifier/model/slack"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -12,13 +13,14 @@ import (
 type Requester struct {
 	httpClient        *http.Client
 	branchCommiterMap map[string][]*git.BranchInformation
+	branchCount       int
 }
 
 const urlString = ""
 
 // New is function to initialize Client
-func NewRequester(branchCommiterMap map[string][]*git.BranchInformation) (*Requester, error) {
-	requester := Requester{httpClient: &http.Client{Timeout: time.Duration(10) * time.Second}, branchCommiterMap: branchCommiterMap}
+func NewRequester(branchCommiterMap map[string][]*git.BranchInformation, branchCount int) (*Requester, error) {
+	requester := Requester{httpClient: &http.Client{Timeout: time.Duration(10) * time.Second}, branchCommiterMap: branchCommiterMap, branchCount: branchCount}
 	return &requester, nil
 }
 
@@ -29,9 +31,9 @@ func (r *Requester) Notify() error {
 		Text        string             `json:"text"`
 		Attachments []slack.Attachment `json:"attachments"`
 	}{
-		"Stalin",
+		"Buried Branch Notifier",
 		":zawazawa:",
-		"*The following branches have not developed for more than 2 weeks. Let's purge!!*",
+		fmt.Sprintf("*The following branches have not developed for more than 2 weeks. There are a total of %d brunches. Let's purge!!*", r.branchCount),
 		slack.NewAttachments(r.branchCommiterMap),
 	})
 	bodyReader := bytes.NewReader(bodyByte)
